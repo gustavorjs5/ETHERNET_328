@@ -86,7 +86,16 @@
 #define EE_OUT8_HORA_OFF           61
 #define EE_OUT8_MINUTOS_OFF        62
 #define EE_OUT8_DIA_OFF            63
-
+#define EE_GIP_BYTE_1              64
+#define EE_GIP_BYTE_2              65
+#define EE_GIP_BYTE_3              66
+#define EE_GIP_BYTE_4              67
+#define EE_MAC_BYTE_1              68
+#define EE_MAC_BYTE_2              68
+#define EE_MAC_BYTE_3              68
+#define EE_MAC_BYTE_4              68
+#define EE_MAC_BYTE_5              68
+#define EE_MAC_BYTE_6              69
         
 
 bool PROGRAMACION=0;
@@ -136,65 +145,65 @@ bool OUT6_CONDICION_OFF;
 bool OUT7_CONDICION_OFF;
 bool OUT8_CONDICION_OFF;
 
-unsigned int TIEMPO_TEMPORIZADA_OUT1;
-unsigned int TIEMPO_TEMPORIZADA_OUT2;
-unsigned int TIEMPO_TEMPORIZADA_OUT3;
-unsigned int TIEMPO_TEMPORIZADA_OUT4;
-unsigned int TIEMPO_TEMPORIZADA_OUT5;
-unsigned int TIEMPO_TEMPORIZADA_OUT6;
-unsigned int TIEMPO_TEMPORIZADA_OUT7;
-unsigned int TIEMPO_TEMPORIZADA_OUT8;
+unsigned char TIEMPO_TEMPORIZADA_OUT1;
+unsigned char TIEMPO_TEMPORIZADA_OUT2;
+unsigned char TIEMPO_TEMPORIZADA_OUT3;
+unsigned char TIEMPO_TEMPORIZADA_OUT4;
+unsigned char TIEMPO_TEMPORIZADA_OUT5;
+unsigned char TIEMPO_TEMPORIZADA_OUT6;
+unsigned char TIEMPO_TEMPORIZADA_OUT7;
+unsigned char TIEMPO_TEMPORIZADA_OUT8;
 
 
-int OUT1_HORA_ON ;
-int OUT1_MINUTOS_ON;
-int OUT1_DIA_ON; 
-int OUT2_HORA_ON ;
-int OUT2_MINUTOS_ON;
-int OUT2_DIA_ON; 
-int OUT3_HORA_ON ;
-int OUT3_MINUTOS_ON;
-int OUT3_DIA_ON; 
-int OUT4_HORA_ON ;
-int OUT4_MINUTOS_ON;
-int OUT4_DIA_ON; 
-int OUT5_HORA_ON ;
-int OUT5_MINUTOS_ON;
-int OUT5_DIA_ON; 
-int OUT6_HORA_ON ;
-int OUT6_MINUTOS_ON;
-int OUT6_DIA_ON; 
-int OUT7_HORA_ON ;
-int OUT7_MINUTOS_ON;
-int OUT7_DIA_ON; 
-int OUT8_HORA_ON ;
-int OUT8_MINUTOS_ON;
-int OUT8_DIA_ON; 
+unsigned char OUT1_HORA_ON ;
+unsigned char OUT1_MINUTOS_ON;
+unsigned char OUT1_DIA_ON; 
+unsigned char OUT2_HORA_ON ;
+unsigned char OUT2_MINUTOS_ON;
+unsigned char OUT2_DIA_ON; 
+unsigned char OUT3_HORA_ON ;
+unsigned char OUT3_MINUTOS_ON;
+unsigned char OUT3_DIA_ON; 
+unsigned char OUT4_HORA_ON ;
+unsigned char OUT4_MINUTOS_ON;
+unsigned char OUT4_DIA_ON; 
+unsigned char OUT5_HORA_ON ;
+unsigned char OUT5_MINUTOS_ON;
+unsigned char OUT5_DIA_ON; 
+unsigned char OUT6_HORA_ON ;
+unsigned char OUT6_MINUTOS_ON;
+unsigned char OUT6_DIA_ON; 
+unsigned char OUT7_HORA_ON ;
+unsigned char OUT7_MINUTOS_ON;
+unsigned char OUT7_DIA_ON; 
+unsigned char OUT8_HORA_ON ;
+unsigned char OUT8_MINUTOS_ON;
+unsigned char OUT8_DIA_ON; 
 
-int OUT1_HORA_OFF ;
-int OUT1_MINUTOS_OFF;
-int OUT1_DIA_OFF; 
-int OUT2_HORA_OFF ;
-int OUT2_MINUTOS_OFF;
-int OUT2_DIA_OFF; 
-int OUT3_HORA_OFF ;
-int OUT3_MINUTOS_OFF;
-int OUT3_DIA_OFF; 
-int OUT4_HORA_OFF ;
-int OUT4_MINUTOS_OFF;
-int OUT4_DIA_OFF; 
-int OUT5_HORA_OFF ;
-int OUT5_MINUTOS_OFF;
-int OUT5_DIA_OFF; 
-int OUT6_HORA_OFF ;
-int OUT6_MINUTOS_OFF;
-int OUT6_DIA_OFF; 
-int OUT7_HORA_OFF ;
-int OUT7_MINUTOS_OFF;
-int OUT7_DIA_OFF; 
-int OUT8_HORA_OFF ;
-int OUT8_MINUTOS_OFF;
-int OUT8_DIA_OFF; 
+unsigned char OUT1_HORA_OFF ;
+unsigned char OUT1_MINUTOS_OFF;
+unsigned char OUT1_DIA_OFF; 
+unsigned char OUT2_HORA_OFF ;
+unsigned char OUT2_MINUTOS_OFF;
+unsigned char OUT2_DIA_OFF; 
+unsigned char OUT3_HORA_OFF ;
+unsigned char OUT3_MINUTOS_OFF;
+unsigned char OUT3_DIA_OFF; 
+unsigned char OUT4_HORA_OFF ;
+unsigned char OUT4_MINUTOS_OFF;
+unsigned char OUT4_DIA_OFF; 
+unsigned char OUT5_HORA_OFF ;
+unsigned char OUT5_MINUTOS_OFF;
+unsigned char OUT5_DIA_OFF; 
+unsigned char OUT6_HORA_OFF ;
+unsigned char OUT6_MINUTOS_OFF;
+unsigned char OUT6_DIA_OFF; 
+unsigned char OUT7_HORA_OFF ;
+unsigned char OUT7_MINUTOS_OFF;
+unsigned char OUT7_DIA_OFF; 
+unsigned char OUT8_HORA_OFF ;
+unsigned char OUT8_MINUTOS_OFF;
+unsigned char OUT8_DIA_OFF; 
 
 byte IP_BYTE_1;
 byte IP_BYTE_2;
@@ -206,7 +215,7 @@ byte IP_BYTE_3_P;
 byte IP_BYTE_4_P;
 byte data[62];
 byte bufer[2];
-const int Longitud = 62;
+const unsigned int Longitud = 62;
 unsigned int timer1seg;
 unsigned int timer_OUT1;
 unsigned int timer_OUT2;
@@ -217,11 +226,11 @@ unsigned int timer_OUT6;
 unsigned int timer_OUT7;
 unsigned int timer_OUT8;
 
-unsigned int  GET_ENTRADAS_DIGITALES=0;
-unsigned int POST_SALIDAS_DIGITALES=0;
-char SALIDAS_TEMPORIZADAS;
-char SALIDAS_RELOJ_ON;
-char SALIDAS_RELOJ_OFF;  
+unsigned char GET_ENTRADAS_DIGITALES=0;
+unsigned char POST_SALIDAS_DIGITALES=0;
+unsigned char SALIDAS_TEMPORIZADAS;
+unsigned char SALIDAS_RELOJ_ON;
+unsigned char SALIDAS_RELOJ_OFF;  
 
 
 // RTC_DS1307 rtc;
@@ -231,12 +240,9 @@ String daysOfTheWeek[7] = { "Domingo", "Lunes", "Martes", "Miercoles", "Jueves",
 String monthsNames[12] = { "Enero", "Febrero", "Marzo", "Abril", "Mayo",  "Junio", "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre" };
 
 int trama [] = {1, IP_BYTE_1_P, IP_BYTE_2_P, IP_BYTE_3_P,IP_BYTE_4_P};  
-
-
 static byte mac[] = {0x00,0x01,0x02,0x03,0x04,0x05};
 static byte ip[] = {IP_BYTE_1,IP_BYTE_2,IP_BYTE_3,IP_BYTE_4};
-
-//static byte gwip[] = { 192,168,0,1 };
+static byte gwip[] = { 192,168,0,1 };
 byte Ethernet::buffer[200];
 BufferFiller bfill;
 
@@ -246,16 +252,16 @@ void setup ()
 
      Timer1.initialize(1000000);                   // Dispara cada 1000 ms
      Timer1.attachInterrupt(Timer1000ms);           // Activa la interrupcion y la asocia a Timer100ms 
-     InicializarVariables();
      Serial.begin(115200);
+     InicializarVariables();
      ether.begin(sizeof Ethernet::buffer, mac, 10); //configura modulo ethernet
      ether.staticSetup(ip);//establece la ip
-    if (!rtc.begin()) // si devuelve 0 falla de ocomunicacion RTC
-     {
+     if (!rtc.begin()) // si devuelve 0 falla de ocomunicacion RTC
+      {
       Serial.println(F("Couldn't find RTC"));    
-     }
+      }
     delay(1000); 
-   // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));// Fijar a fecha y hora de compilacion
+    //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));// Fijar a fecha y hora de compilacion
    // rtc.adjust(DateTime(2016, 1, 21, 3, 10, 10)); // Fijar a fecha y hora específica. En el ejemplo, 21 de Enero de 2016 a las 03:00:00
    
   //------Configuracion de salidas digitales
@@ -282,7 +288,7 @@ void setup ()
   pinMode(IN3, INPUT_PULLUP);
   pinMode(IN4, INPUT_PULLUP);
   bG_PrimeraEntrada = true;
-  InicializarVariables();
+ 
 
 }
 
@@ -294,7 +300,7 @@ void loop()
   
  if(PROGRAMACION == OFF) // SI MODO PROGRAMACION ESTA DESACTIVADO ENTRA
     {
-   if(bG_PrimeraEntrada == true)  // PRIMERA ENTRADA PARA INICIALIZAR VARIABLES Y DAR DIRECCION MODBUS  
+   if(bG_PrimeraEntrada == true)  // PRIMERA ENTRADA PARA INICIALIZAR VARIABLES
     { 
      wdt_disable();//DESACTIVO PERRO GUARDION
      bG_PrimeraEntrada = false;
@@ -944,6 +950,8 @@ ip[1] = IP_BYTE_2_P;
 ip[2] = IP_BYTE_3_P;
 ip[3] = IP_BYTE_4_P;
 
+
+
 //--------------LEE EL DE MODO DE ACTIVACION DE SALIDA POR TIMER-----------------------
 
 SALIDAS_TEMPORIZADAS = EEPROM.read(EE_SALIDAS_TEMPORIZADAS);
@@ -1112,49 +1120,25 @@ unsigned int ObtenerValor(byte paquete [], byte i)
   valor = (valor * 256)+ paquete [i];
   valor = (valor * 256)+ paquete [i+1];
   return valor;
-  }
+}
 
   void serialEvent()
 {
     
      while (Serial.available()>0) 
       { 
-        Serial.readBytes(data, 62);
-        //delay(1000); 
-     
+        Serial.readBytes(data, 3);
           if ( data[0]== 3)
             {
-           if( data[1]== 3)
+              if( data[1]== 3)
                 {    
-                   switch (data[2])
-                 { 
-                  case 1: // SE CONECTA AL EQUIPO Y ENVIA LOS DATOS A LA INTERFAZ
-                  {
-                      Enviar_Datos();
-                      PROGRAMACION = true;      
-                    break;            
-                  }
-                   case 2: // cambiar direccion ip
-                  {  
-      
-                    EEPROM.write(EE_IP_BYTE_1,data[3]);            
-                    EEPROM.write(EE_IP_BYTE_2,data[4]);
-                    EEPROM.write(EE_IP_BYTE_3,data[5]);
-                    EEPROM.write(EE_IP_BYTE_4,data[6]);
-                    Serial.write(2);     //IP CAMBIADA         
-                    break;            
-                  }
-                   case 3:
-                  {           
-                    PROGRAMACION = false;
-                    Serial.write(3);            
-                    break;                         
-                  }
-
-            return;
-           }
-        }
-      }     
+                  if (data[2]=1)
+                   { 
+                        Enviar_Datos();
+                        PROGRAMACION = true;       
+                   }
+              }
+         }     
    } 
 }
 
@@ -1354,7 +1338,7 @@ void Grabar_Datos_EEPROM(void)
 
 {             
           
-             EEPROM.write(EE_SALIDAS_TEMPORIZADAS,data[3]); //OUT1 1 = SALIDA ACTIVA CON TEMPORIZADOR             
+             EEPROM.write(EE_SALIDAS_TEMPORIZADAS,data[3]);    //OUT1 1 = SALIDA ACTIVA CON TEMPORIZADOR             
              EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT1,data[4]); // TIEMPO TEMPORIZADA OUT 1, EN SEGUNDOS, MAXIMO 254 SEGUNDOS
              EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT2,data[5]); // TIEMPO TEMPORIZADA OUT 2, EN SEGUNDOS, MAXIMO 254 SEGUNDOS
              EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT3,data[6]); // TIEMPO TEMPORIZADA OUT 3, EN SEGUNDOS, MAXIMO 254 SEGUNDOS
@@ -1417,7 +1401,7 @@ void Grabar_Datos_EEPROM(void)
              EEPROM.write(EE_OUT8_HORA_OFF ,   data[59]); //OUT8 = HORA DE APAGADA 
              EEPROM.write(EE_OUT8_MINUTOS_OFF ,data[60]); //OUT8 = MINUTOS DE APAGADA 
              EEPROM.write(EE_OUT8_DIA_OFF ,    data[61]); //OUT8 = MINUTOS DE APAGADA      
-             //return;
+             return;
              
 }
 
