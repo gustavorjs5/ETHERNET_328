@@ -938,17 +938,17 @@ void InicializarVariables(void)
  ip[2]= EEPROM.read(EE_IP_BYTE_3) ;
  ip[3]= EEPROM.read(EE_IP_BYTE_4) ;
 
- gwip[0]= EEPROM.read(EE_GWIP_BYTE_1);
- gwip[1]= EEPROM.read(EE_GWIP_BYTE_2);
- gwip[2]= EEPROM.read(EE_GWIP_BYTE_3);
- gwip[3]= EEPROM.read(EE_GWIP_BYTE_4);
-
- mac[0]= EEPROM.read(EE_MAC_BYTE_1);
- mac[1]= EEPROM.read(EE_MAC_BYTE_2);
- mac[2]= EEPROM.read(EE_MAC_BYTE_3);
- mac[3]= EEPROM.read(EE_MAC_BYTE_4);
- mac[4]= EEPROM.read(EE_MAC_BYTE_5);
- mac[5]= EEPROM.read(EE_MAC_BYTE_6);
+// gwip[0]= EEPROM.read(EE_GWIP_BYTE_1);
+// gwip[1]= EEPROM.read(EE_GWIP_BYTE_2);
+// gwip[2]= EEPROM.read(EE_GWIP_BYTE_3);
+// gwip[3]= EEPROM.read(EE_GWIP_BYTE_4);
+//
+// mac[0]= EEPROM.read(EE_MAC_BYTE_1);
+// mac[1]= EEPROM.read(EE_MAC_BYTE_2);
+// mac[2]= EEPROM.read(EE_MAC_BYTE_3);
+// mac[3]= EEPROM.read(EE_MAC_BYTE_4);
+// mac[4]= EEPROM.read(EE_MAC_BYTE_5);
+// mac[5]= EEPROM.read(EE_MAC_BYTE_6);
 
 //--------------LEE EL DE MODO DE ACTIVACION DE SALIDA POR TIMER-----------------------
 
@@ -1328,7 +1328,7 @@ void Enviar_Datos(void)
                      delay(100);
                      Serial.write(mac[4]);
                      delay(100);
-                     Serial.write(mac[5]);
+                     Serial.write(mac[5]); //81
                                                    
 }
 
