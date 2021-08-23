@@ -86,10 +86,10 @@
 #define EE_OUT8_HORA_OFF           61
 #define EE_OUT8_MINUTOS_OFF        62
 #define EE_OUT8_DIA_OFF            63
-#define EE_GIP_BYTE_1              64
-#define EE_GIP_BYTE_2              65
-#define EE_GIP_BYTE_3              66
-#define EE_GIP_BYTE_4              67
+#define EE_GWIP_BYTE_1              64
+#define EE_GWIP_BYTE_2              65
+#define EE_GWIP_BYTE_3              66
+#define EE_GWIP_BYTE_4              67
 #define EE_MAC_BYTE_1              68
 #define EE_MAC_BYTE_2              68
 #define EE_MAC_BYTE_3              68
@@ -205,15 +205,9 @@ unsigned char OUT8_HORA_OFF ;
 unsigned char OUT8_MINUTOS_OFF;
 unsigned char OUT8_DIA_OFF; 
 
-byte IP_BYTE_1;
-byte IP_BYTE_2;
-byte IP_BYTE_3;
-byte IP_BYTE_4;
-byte IP_BYTE_1_P;
-byte IP_BYTE_2_P;
-byte IP_BYTE_3_P;
-byte IP_BYTE_4_P;
-byte data[62];
+
+byte data[3];
+byte Data2 [62];
 byte bufer[2];
 const unsigned int Longitud = 62;
 unsigned int timer1seg;
@@ -239,9 +233,8 @@ RTC_DS3231 rtc;
 String daysOfTheWeek[7] = { "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" };
 String monthsNames[12] = { "Enero", "Febrero", "Marzo", "Abril", "Mayo",  "Junio", "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre" };
 
-int trama [] = {1, IP_BYTE_1_P, IP_BYTE_2_P, IP_BYTE_3_P,IP_BYTE_4_P};  
 static byte mac[] = {0x00,0x01,0x02,0x03,0x04,0x05};
-static byte ip[] = {IP_BYTE_1,IP_BYTE_2,IP_BYTE_3,IP_BYTE_4};
+static byte ip[] =   {192,168,0,90};
 static byte gwip[] = { 192,168,0,1 };
 byte Ethernet::buffer[200];
 BufferFiller bfill;
@@ -940,17 +933,22 @@ void printDate(DateTime date)
 void InicializarVariables(void)
 { 
 
- IP_BYTE_1_P = EEPROM.read(EE_IP_BYTE_1) ;
- IP_BYTE_2_P = EEPROM.read(EE_IP_BYTE_2) ;
- IP_BYTE_3_P = EEPROM.read(EE_IP_BYTE_3) ;
- IP_BYTE_4_P = EEPROM.read(EE_IP_BYTE_4) ;
+ ip[0]= EEPROM.read(EE_IP_BYTE_1) ;
+ ip[1]= EEPROM.read(EE_IP_BYTE_2) ;
+ ip[2]= EEPROM.read(EE_IP_BYTE_3) ;
+ ip[3]= EEPROM.read(EE_IP_BYTE_4) ;
 
-ip[0] = IP_BYTE_1_P;
-ip[1] = IP_BYTE_2_P;
-ip[2] = IP_BYTE_3_P;
-ip[3] = IP_BYTE_4_P;
+ gwip[0]= EEPROM.read(EE_GWIP_BYTE_1);
+ gwip[1]= EEPROM.read(EE_GWIP_BYTE_2);
+ gwip[2]= EEPROM.read(EE_GWIP_BYTE_3);
+ gwip[3]= EEPROM.read(EE_GWIP_BYTE_4);
 
-
+ mac[0]= EEPROM.read(EE_MAC_BYTE_1);
+ mac[1]= EEPROM.read(EE_MAC_BYTE_2);
+ mac[2]= EEPROM.read(EE_MAC_BYTE_3);
+ mac[3]= EEPROM.read(EE_MAC_BYTE_4);
+ mac[4]= EEPROM.read(EE_MAC_BYTE_5);
+ mac[5]= EEPROM.read(EE_MAC_BYTE_6);
 
 //--------------LEE EL DE MODO DE ACTIVACION DE SALIDA POR TIMER-----------------------
 
@@ -1052,44 +1050,65 @@ void Programacion(void)
    while (Serial.available()>0) 
        {      
           delay(1000);      
-         int rlen = Serial.readBytes(data, Longitud); 
+          Serial.readBytes(Data2, 62); 
          //delay(2000);                    
-         if ( data[0]== 3)
+         if ( Data2[0]== 3)
            {
-              if( data[1]== 3)
+              if( Data2[1]== 3)
                {    
-                  switch (data[2])
+                  switch (Data2[2])
                   { 
-                    case 1: // SE CONECTA AL EQUIPO Y ENVIA LOS DATOS A LA INTERFAZ
-                    {
-                     PROGRAMACION = true;
-                     Enviar_Datos ();                 
-                     break;            
+                     case 1: // SE CONECTA AL EQUIPO Y ENVIA LOS DATOS A LA INTERFAZ
+                      {
+                      Enviar_Datos ();                 
+                      break;            
                       }
-                     case 2: // cambiar direccion ip
+                     case 2: // cambiar direccion IP,GIP Y MAC.
                      {  
                       EEPROM.write(EE_IP_BYTE_1,data[3]);            
                       EEPROM.write(EE_IP_BYTE_2,data[4]);
                       EEPROM.write(EE_IP_BYTE_3,data[5]);
                       EEPROM.write(EE_IP_BYTE_4,data[6]);
+                      EEPROM.write(EE_GWIP_BYTE_1,data[7]);
+                      EEPROM.write(EE_GWIP_BYTE_2,data[8]);
+                      EEPROM.write(EE_GWIP_BYTE_3,data[9]);
+                      EEPROM.write(EE_GWIP_BYTE_4,data[10]);
+                      EEPROM.write(EE_MAC_BYTE_1,data[11]);
+                      EEPROM.write(EE_MAC_BYTE_2,data[12]);
+                      EEPROM.write(EE_MAC_BYTE_3,data[13]);
+                      EEPROM.write(EE_MAC_BYTE_4,data[14]);
+                      EEPROM.write(EE_MAC_BYTE_5,data[15]);
+                      EEPROM.write(EE_MAC_BYTE_6,data[16]);                      
                       Serial.write(2);     //IP CAMBIADA                        
                        break;            
                       }
                        case 3:
-                      {           
+                       {           
                         PROGRAMACION = false; //Desconectarse del equipo
                         Serial.write(3);              
                         break;                         
-                      }
+                       }
           
-                       case 4: // Grabar Datos EEPROM
-                      {  
-                        Grabar_Datos_EEPROM();
+                       case 4: // Grabar Datos EEPROM SALIDAS TEMPORIZADAS
+                       {  
+                        Grabar_Datos_EEPROM_TEMP();
                         Serial.write(4);                                           
                         break;                         
-                      }
-                      case 5: //Actualizar fecha y hora RTC
-                      {  
+                       }
+                       case 5: // Grabar Datos EEPROM SALIDAS OFF POR RELOJ
+                       {  
+                        Grabar_Datos_EEPROM_OFF();
+                        Serial.write(4);                                           
+                        break;                         
+                       }
+                       case 6: // Grabar Datos EEPROM SALIDAS ON POR RELOJ
+                       {  
+                        Grabar_Datos_EEPROM_ON();
+                        Serial.write(4);                                           
+                        break;                         
+                       }
+                       case 7: //Actualizar fecha y hora RTC
+                        {  
                          byte year2         = data[3]; 
                          byte year1         = data[4];    
                          byte me            = data[5]; 
@@ -1097,12 +1116,12 @@ void Programacion(void)
                          byte hor           = data[7];   
                          byte minu          = data[8]; 
                          byte segun         = data[9]; 
-                         byte  recibe [2]={year2, year1};                           
-                          unsigned int YEAR;
-                          ObtenerValor(recibe, 0);     
-                          rtc.adjust(DateTime( ObtenerValor(recibe, 0) , me,di,hor,minu,segun));
-                          Serial.write(5);                                
-                          break;   
+                         byte  recibe [2]   = {year2, year1};                           
+                         unsigned int YEAR;
+                         ObtenerValor(recibe, 0);     
+                         rtc.adjust(DateTime( ObtenerValor(recibe, 0) , me,di,hor,minu,segun));
+                         Serial.write(5);                                
+                         break;   
                                                 
                       }
                      }
@@ -1163,13 +1182,13 @@ void Enviar_Datos(void)
                   
                      Serial.write(CONFIRMACION);
                      delay(100);
-                     Serial.write(IP_BYTE_1_P);
+                     Serial.write(ip[0]);
                      delay(100);
-                     Serial.write(IP_BYTE_2_P);
+                     Serial.write(ip[1]);
                      delay(100);
-                     Serial.write(IP_BYTE_3_P);
+                     Serial.write(ip[2]);
                      delay(100);
-                     Serial.write(IP_BYTE_4_P);
+                     Serial.write(ip[3]);
                      delay(100);
                      Serial.write(SALIDAS_TEMPORIZADAS);
                      delay(100);                    
@@ -1289,8 +1308,28 @@ void Enviar_Datos(void)
                      delay(100);
                      Serial.write(OUT8_DIA_OFF);
                      delay(100);
-                     Enviar_Hora(now);    //71 bytes              
-                    
+                     Enviar_Hora(now);    //71 bytes  
+                     delay(100);
+                     Serial.write(gwip[0]);
+                     delay(100);
+                     Serial.write(gwip[1]);
+                     delay(100);
+                     Serial.write(gwip[2]);
+                     delay(100);
+                     Serial.write(gwip[3]);
+                     delay(100);
+                     Serial.write(mac[0]);
+                     delay(100);
+                     Serial.write(mac[1]);
+                     delay(100);
+                     Serial.write(mac[2]);
+                     delay(100);
+                     Serial.write(mac[3]);
+                     delay(100);
+                     Serial.write(mac[4]);
+                     delay(100);
+                     Serial.write(mac[5]);
+                                                   
 }
 
 
@@ -1334,11 +1373,11 @@ void Enviar_Datos(void)
 }
 
 
-void Grabar_Datos_EEPROM(void)
+void Grabar_Datos_EEPROM_TEMP(void)
 
 {             
           
-             EEPROM.write(EE_SALIDAS_TEMPORIZADAS,data[3]);    //OUT1 1 = SALIDA ACTIVA CON TEMPORIZADOR             
+             EEPROM.write(EE_SALIDAS_TEMPORIZADAS,   data[3]);    //OUT1 1 = SALIDA ACTIVA CON TEMPORIZADOR             
              EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT1,data[4]); // TIEMPO TEMPORIZADA OUT 1, EN SEGUNDOS, MAXIMO 254 SEGUNDOS
              EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT2,data[5]); // TIEMPO TEMPORIZADA OUT 2, EN SEGUNDOS, MAXIMO 254 SEGUNDOS
              EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT3,data[6]); // TIEMPO TEMPORIZADA OUT 3, EN SEGUNDOS, MAXIMO 254 SEGUNDOS
@@ -1346,65 +1385,76 @@ void Grabar_Datos_EEPROM(void)
              EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT5,data[8]); // TIEMPO TEMPORIZADA OUT 5, EN SEGUNDOS, MAXIMO 254 SEGUNDOS
              EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT6,data[9]); // TIEMPO TEMPORIZADA OUT 6, EN SEGUNDOS, MAXIMO 254 SEGUNDOS
              EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT7,data[10]); // TIEMPO TEMPORIZADA OUT 7, EN SEGUNDOS, MAXIMO 254 SEGUNDOS
-             EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT8,data[11]); // TIEMPO TEMPORIZADA OUT 8, EN SEGUNDOS, MAXIMO 254 SEGUNDOS
-
-             EEPROM.write(EE_SALIDAS_RELOJ_ON,data[12]); //OUT1 = SALIDA ACTIVA CON HORA DEL RELOJ
-
-             EEPROM.write(EE_OUT1_HORA_ON ,   data[13]); //OUT1 = HORA DE ENCENDIDA 
-             EEPROM.write(EE_OUT1_MINUTOS_ON ,data[14]); //OUT1 = MINUTOS DE ENCENDIDA 
-             EEPROM.write(EE_OUT1_DIA_ON ,    data[15]); //OUT1 = dia DE ENCENDIDA
-             EEPROM.write(EE_OUT2_HORA_ON ,   data[16]); //OUT2 = HORA DE ENCENDIDA 
-             EEPROM.write(EE_OUT2_MINUTOS_ON ,data[17]); //OUT2 = MINUTOS DE ENCENDIDA 
-             EEPROM.write(EE_OUT2_DIA_ON ,    data[18]); //OUT2 = MINUTOS DE ENCENDIDA
-             EEPROM.write(EE_OUT3_HORA_ON ,   data[19]); //OUT3 = HORA DE ENCENDIDA 
-             EEPROM.write(EE_OUT3_MINUTOS_ON ,data[20]); //OUT3 = MINUTOS DE ENCENDIDA 
-             EEPROM.write(EE_OUT3_DIA_ON ,    data[21]); //OUT3 = MINUTOS DE ENCENDIDA
-             EEPROM.write(EE_OUT4_HORA_ON ,   data[22]); //OUT4 = HORA DE ENCENDIDA 
-             EEPROM.write(EE_OUT4_MINUTOS_ON ,data[23]); //OUT4 = MINUTOS DE ENCENDIDA 
-             EEPROM.write(EE_OUT4_DIA_ON ,    data[24]); //OUT4 = MINUTOS DE ENCENDIDA
-             EEPROM.write(EE_OUT5_HORA_ON ,   data[25]); //OUT5 = HORA DE ENCENDIDA 
-             EEPROM.write(EE_OUT5_MINUTOS_ON ,data[26]); //OUT5 = MINUTOS DE ENCENDIDA 
-             EEPROM.write(EE_OUT5_DIA_ON ,    data[27]); //OUT5 = MINUTOS DE ENCENDIDA
-             EEPROM.write(EE_OUT6_HORA_ON ,   data[28]); //OUT6 = HORA DE ENCENDIDA 
-             EEPROM.write(EE_OUT6_MINUTOS_ON ,data[29]); //OUT6 = MINUTOS DE ENCENDIDA 
-             EEPROM.write(EE_OUT6_DIA_ON ,    data[30]); //OUT6 = MINUTOS DE ENCENDIDA
-             EEPROM.write(EE_OUT7_HORA_ON ,   data[31]); //OUT7 = HORA DE ENCENDIDA 
-             EEPROM.write(EE_OUT7_MINUTOS_ON ,data[32]); //OUT7 = MINUTOS DE ENCENDIDA 
-             EEPROM.write(EE_OUT7_DIA_ON ,    data[33]); //OUT7 = MINUTOS DE ENCENDIDA
-             EEPROM.write(EE_OUT8_HORA_ON ,   data[34]); //OUT8 = HORA DE ENCENDIDA 
-             EEPROM.write(EE_OUT8_MINUTOS_ON ,data[35]); //OUT8 = MINUTOS DE ENCENDIDA 
-             EEPROM.write(EE_OUT8_DIA_ON ,    data[36]); //OUT8 = MINUTOS DE ENCENDIDA
-
-             EEPROM.write(EE_SALIDAS_RELOJ_OFF,data[37]); //OUT1 = SALIDA DESACTIVA CON HORA DEL RELOJ
-            
-             EEPROM.write(EE_OUT1_HORA_OFF ,   data[38]); //OUT1 = HORA DE APAGADA 
-             EEPROM.write(EE_OUT1_MINUTOS_OFF ,data[39]); //OUT1 = MINUTOS DE APAGADA 
-             EEPROM.write(EE_OUT1_DIA_OFF ,    data[40]); //OUT1 = MINUTOS DE APAGADA
-             EEPROM.write(EE_OUT2_HORA_OFF ,   data[41]); //OUT2 = HORA DE APAGADA 
-             EEPROM.write(EE_OUT2_MINUTOS_OFF ,data[42]); //OUT2 = MINUTOS DE APAGADA 
-             EEPROM.write(EE_OUT2_DIA_OFF ,    data[43]); //OUT2 = MINUTOS DE APAGADA
-             EEPROM.write(EE_OUT3_HORA_OFF ,   data[44]); //OUT3 = HORA DE APAGADA 
-             EEPROM.write(EE_OUT3_MINUTOS_OFF ,data[45]); //OUT3 = MINUTOS DE APAGADA 
-             EEPROM.write(EE_OUT3_DIA_OFF ,    data[46]); //OUT3 = MINUTOS DE APAGADA
-             EEPROM.write(EE_OUT4_HORA_OFF ,   data[47]); //OUT4 = HORA DE APAGADA 
-             EEPROM.write(EE_OUT4_MINUTOS_OFF ,data[48]); //OUT4 = MINUTOS DE APAGADA 
-             EEPROM.write(EE_OUT4_DIA_OFF ,    data[49]); //OUT4 = MINUTOS DE APAGADA
-             EEPROM.write(EE_OUT5_HORA_OFF ,   data[50]); //OUT5 = HORA DE APAGADA 
-             EEPROM.write(EE_OUT5_MINUTOS_OFF ,data[51]); //OUT5 = MINUTOS DE APAGADA 
-             EEPROM.write(EE_OUT5_DIA_OFF ,    data[52]); //OUT5 = MINUTOS DE APAGADA
-             EEPROM.write(EE_OUT6_HORA_OFF ,   data[53]); //OUT6 = HORA DE APAGADA 
-             EEPROM.write(EE_OUT6_MINUTOS_OFF ,data[54]); //OUT6 = MINUTOS DE APAGADA 
-             EEPROM.write(EE_OUT6_DIA_OFF ,    data[55]); //OUT6 = MINUTOS DE APAGADA
-             EEPROM.write(EE_OUT7_HORA_OFF ,   data[56]); //OUT7 = HORA DE APAGADA 
-             EEPROM.write(EE_OUT7_MINUTOS_OFF ,data[57]); //OUT7 = MINUTOS DE APAGADA 
-             EEPROM.write(EE_OUT7_DIA_OFF ,    data[58]); //OUT7 = MINUTOS DE APAGADA
-             EEPROM.write(EE_OUT8_HORA_OFF ,   data[59]); //OUT8 = HORA DE APAGADA 
-             EEPROM.write(EE_OUT8_MINUTOS_OFF ,data[60]); //OUT8 = MINUTOS DE APAGADA 
-             EEPROM.write(EE_OUT8_DIA_OFF ,    data[61]); //OUT8 = MINUTOS DE APAGADA      
+             EEPROM.write(EE_TIEMPO_TEMPORIZADA_OUT8,data[11]); // TIEMPO TEMPORIZADA OUT 8, EN SEGUNDOS, MAXIMO 254 SEGUNDOS     
              return;
              
 }
+void Grabar_Datos_EEPROM_ON(void)
 
+{             
+          
+             EEPROM.write(EE_SALIDAS_RELOJ_ON,data[3]); //OUT1 = SALIDA ACTIVA CON HORA DEL RELOJ
+             EEPROM.write(EE_OUT1_HORA_ON ,   data[4]); //OUT1 = HORA DE ENCENDIDA 
+             EEPROM.write(EE_OUT1_MINUTOS_ON ,data[5]); //OUT1 = MINUTOS DE ENCENDIDA 
+             EEPROM.write(EE_OUT1_DIA_ON ,    data[6]); //OUT1 = dia DE ENCENDIDA
+             EEPROM.write(EE_OUT2_HORA_ON ,   data[7]); //OUT2 = HORA DE ENCENDIDA 
+             EEPROM.write(EE_OUT2_MINUTOS_ON ,data[8]); //OUT2 = MINUTOS DE ENCENDIDA 
+             EEPROM.write(EE_OUT2_DIA_ON ,    data[9]); //OUT2 = MINUTOS DE ENCENDIDA
+             EEPROM.write(EE_OUT3_HORA_ON ,   data[10]); //OUT3 = HORA DE ENCENDIDA 
+             EEPROM.write(EE_OUT3_MINUTOS_ON ,data[11]); //OUT3 = MINUTOS DE ENCENDIDA 
+             EEPROM.write(EE_OUT3_DIA_ON ,    data[12]); //OUT3 = MINUTOS DE ENCENDIDA
+             EEPROM.write(EE_OUT4_HORA_ON ,   data[13]); //OUT4 = HORA DE ENCENDIDA 
+             EEPROM.write(EE_OUT4_MINUTOS_ON ,data[14]); //OUT4 = MINUTOS DE ENCENDIDA 
+             EEPROM.write(EE_OUT4_DIA_ON ,    data[15]); //OUT4 = MINUTOS DE ENCENDIDA
+             EEPROM.write(EE_OUT5_HORA_ON ,   data[16]); //OUT5 = HORA DE ENCENDIDA 
+             EEPROM.write(EE_OUT5_MINUTOS_ON ,data[17]); //OUT5 = MINUTOS DE ENCENDIDA 
+             EEPROM.write(EE_OUT5_DIA_ON ,    data[18]); //OUT5 = MINUTOS DE ENCENDIDA
+             EEPROM.write(EE_OUT6_HORA_ON ,   data[19]); //OUT6 = HORA DE ENCENDIDA 
+             EEPROM.write(EE_OUT6_MINUTOS_ON ,data[20]); //OUT6 = MINUTOS DE ENCENDIDA 
+             EEPROM.write(EE_OUT6_DIA_ON ,    data[21]); //OUT6 = MINUTOS DE ENCENDIDA
+             EEPROM.write(EE_OUT7_HORA_ON ,   data[22]); //OUT7 = HORA DE ENCENDIDA 
+             EEPROM.write(EE_OUT7_MINUTOS_ON ,data[23]); //OUT7 = MINUTOS DE ENCENDIDA 
+             EEPROM.write(EE_OUT7_DIA_ON ,    data[24]); //OUT7 = MINUTOS DE ENCENDIDA
+             EEPROM.write(EE_OUT8_HORA_ON ,   data[25]); //OUT8 = HORA DE ENCENDIDA 
+             EEPROM.write(EE_OUT8_MINUTOS_ON ,data[26]); //OUT8 = MINUTOS DE ENCENDIDA 
+             EEPROM.write(EE_OUT8_DIA_ON ,    data[27]); //OUT8 = MINUTOS DE ENCENDIDA
+
+                  
+             return;
+             
+}
+void Grabar_Datos_EEPROM_OFF(void)
+
+{             
+          
+             EEPROM.write(EE_SALIDAS_RELOJ_OFF,data[3]); //OUT1 = SALIDA DESACTIVA CON HORA DEL RELOJ            
+             EEPROM.write(EE_OUT1_HORA_OFF ,   data[4]); //OUT1 = HORA DE APAGADA 
+             EEPROM.write(EE_OUT1_MINUTOS_OFF ,data[5]); //OUT1 = MINUTOS DE APAGADA 
+             EEPROM.write(EE_OUT1_DIA_OFF ,    data[6]); //OUT1 = MINUTOS DE APAGADA
+             EEPROM.write(EE_OUT2_HORA_OFF ,   data[7]); //OUT2 = HORA DE APAGADA 
+             EEPROM.write(EE_OUT2_MINUTOS_OFF ,data[8]); //OUT2 = MINUTOS DE APAGADA 
+             EEPROM.write(EE_OUT2_DIA_OFF ,    data[9]); //OUT2 = MINUTOS DE APAGADA
+             EEPROM.write(EE_OUT3_HORA_OFF ,   data[10]); //OUT3 = HORA DE APAGADA 
+             EEPROM.write(EE_OUT3_MINUTOS_OFF ,data[11]); //OUT3 = MINUTOS DE APAGADA 
+             EEPROM.write(EE_OUT3_DIA_OFF ,    data[12]); //OUT3 = MINUTOS DE APAGADA
+             EEPROM.write(EE_OUT4_HORA_OFF ,   data[13]); //OUT4 = HORA DE APAGADA 
+             EEPROM.write(EE_OUT4_MINUTOS_OFF ,data[14]); //OUT4 = MINUTOS DE APAGADA 
+             EEPROM.write(EE_OUT4_DIA_OFF ,    data[15]); //OUT4 = MINUTOS DE APAGADA
+             EEPROM.write(EE_OUT5_HORA_OFF ,   data[16]); //OUT5 = HORA DE APAGADA 
+             EEPROM.write(EE_OUT5_MINUTOS_OFF ,data[17]); //OUT5 = MINUTOS DE APAGADA 
+             EEPROM.write(EE_OUT5_DIA_OFF ,    data[18]); //OUT5 = MINUTOS DE APAGADA
+             EEPROM.write(EE_OUT6_HORA_OFF ,   data[19]); //OUT6 = HORA DE APAGADA 
+             EEPROM.write(EE_OUT6_MINUTOS_OFF ,data[20]); //OUT6 = MINUTOS DE APAGADA 
+             EEPROM.write(EE_OUT6_DIA_OFF ,    data[21]); //OUT6 = MINUTOS DE APAGADA
+             EEPROM.write(EE_OUT7_HORA_OFF ,   data[22]); //OUT7 = HORA DE APAGADA 
+             EEPROM.write(EE_OUT7_MINUTOS_OFF ,data[23]); //OUT7 = MINUTOS DE APAGADA 
+             EEPROM.write(EE_OUT7_DIA_OFF ,    data[24]); //OUT7 = MINUTOS DE APAGADA
+             EEPROM.write(EE_OUT8_HORA_OFF ,   data[25]); //OUT8 = HORA DE APAGADA 
+             EEPROM.write(EE_OUT8_MINUTOS_OFF ,data[26]); //OUT8 = MINUTOS DE APAGADA 
+             EEPROM.write(EE_OUT8_DIA_OFF ,    data[27]); //OUT8 = MINUTOS DE APAGADA      
+             return;
+             
+}
 
 void salida_1_off(DateTime date)
 {
