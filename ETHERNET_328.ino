@@ -234,10 +234,13 @@ String daysOfTheWeek[7] = { "Domingo", "Lunes", "Martes", "Miercoles", "Jueves",
 String monthsNames[12] = { "Enero", "Febrero", "Marzo", "Abril", "Mayo",  "Junio", "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre" };
 
 static byte mac[] = {0x00,0x01,0x02,0x03,0x04,0x05};
-static byte ip[] =   {192,168,0,90};
-static byte gwip[] = { 192,168,0,1 };
+static byte ip[]   =   {192,168,1,102};
+static byte gwip[] =   {192,168,0,1};
+static byte mascara[]= {192,168,0,1};
+static byte dns[] =    {192,168,0,1};
 byte Ethernet::buffer[200];
 BufferFiller bfill;
+
 
 
 void setup () 
@@ -248,7 +251,12 @@ void setup ()
      Serial.begin(115200);
      InicializarVariables();
      ether.begin(sizeof Ethernet::buffer, mac, 10); //configura modulo ethernet
-     ether.staticSetup(ip);//establece la ip
+     ether.staticSetup(ip,gwip,dns,mascara);//establece la ip
+     //ether.accept(14764,200);//puerto TCP
+     //ether.hisport=90;
+     //ether.staticSetup(netmask);//establece la ip
+   
+  
      if (!rtc.begin()) // si devuelve 0 falla de ocomunicacion RTC
       {
       Serial.println(F("Couldn't find RTC"));    
@@ -933,10 +941,10 @@ void printDate(DateTime date)
 void InicializarVariables(void)
 { 
 
- ip[0]= EEPROM.read(EE_IP_BYTE_1) ;
- ip[1]= EEPROM.read(EE_IP_BYTE_2) ;
- ip[2]= EEPROM.read(EE_IP_BYTE_3) ;
- ip[3]= EEPROM.read(EE_IP_BYTE_4) ;
+// ip[0]= EEPROM.read(EE_IP_BYTE_1) ;
+// ip[1]= EEPROM.read(EE_IP_BYTE_2) ;
+// ip[2]= EEPROM.read(EE_IP_BYTE_3) ;
+// ip[3]= EEPROM.read(EE_IP_BYTE_4) ;
 
 // gwip[0]= EEPROM.read(EE_GWIP_BYTE_1);
 // gwip[1]= EEPROM.read(EE_GWIP_BYTE_2);
@@ -1098,13 +1106,13 @@ void Programacion(void)
                        case 5: // Grabar Datos EEPROM SALIDAS OFF POR RELOJ
                        {  
                         Grabar_Datos_EEPROM_OFF();
-                        Serial.write(4);                                           
+                        Serial.write(5);                                           
                         break;                         
                        }
                        case 6: // Grabar Datos EEPROM SALIDAS ON POR RELOJ
                        {  
                         Grabar_Datos_EEPROM_ON();
-                        Serial.write(4);                                           
+                        Serial.write(6);                                           
                         break;                         
                        }
                        case 7: //Actualizar fecha y hora RTC
@@ -1120,7 +1128,7 @@ void Programacion(void)
                          unsigned int YEAR;
                          ObtenerValor(recibe, 0);     
                          rtc.adjust(DateTime( ObtenerValor(recibe, 0) , me,di,hor,minu,segun));
-                         Serial.write(5);                                
+                         Serial.write(7);                                
                          break;   
                                                 
                       }
